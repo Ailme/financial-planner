@@ -17,6 +17,7 @@ return [
         'app\modules\admin\Bootstrap',
         'app\modules\main\Bootstrap',
         'app\modules\user\Bootstrap',
+        'app\modules\fin\Bootstrap',
     ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -31,6 +32,9 @@ return [
         ],
         'admin' => [
             'class' => 'app\modules\admin\Module',
+        ],
+        'fin' => [
+            'class' => 'app\modules\fin\Module',
         ],
     ],
     'components' => [
