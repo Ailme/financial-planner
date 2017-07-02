@@ -1,0 +1,39 @@
+{
+  "name": "bte/mail.bte-atm",
+  "description": "Mail wrapper",
+  "type": "project",
+  "license": "BSD-3-Clause",
+  "require": {
+    "php": ">=7.0.0",
+    "yiisoft/yii2": "~2.0.5",
+    "yiisoft/yii2-bootstrap": "~2.0.0",
+    "yiisoft/yii2-swiftmailer": "~2.0.0",
+    "bower-asset/html5shiv": "*",
+    "bower-asset/respond": "*"
+  },
+  "require-dev": {
+    "yiisoft/yii2-debug": "~2.0.0",
+    "yiisoft/yii2-gii": "~2.0.0",
+    "yiisoft/yii2-faker": "~2.0.0",
+    "codeception/base": "^2.2.3",
+    "codeception/verify": "~0.3.1",
+    "codeception/specify": "~0.4.3"
+  },
+  "autoload": {
+    "files": [
+      "components/lib.php"
+    ]
+  },
+  "config": {
+    "process-timeout": 1800
+  },
+  "scripts": {
+    "messages": "php yii message @app/config/message.php; php yii message @app/modules/admin/config/message.php; php yii message @app/modules/main/config/message.php; php yii message @app/modules/user/config/message.php"
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
+}
