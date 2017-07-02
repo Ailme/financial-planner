@@ -2,6 +2,10 @@
 
 namespace app\modules\fin;
 
+use app\modules\fin\repositories\SqlWalletRepository;
+use app\modules\fin\repositories\WalletRepositoryInterface;
+use app\modules\fin\services\WalletService;
+use app\modules\fin\services\WalletServiceInterface;
 use Yii;
 use yii\console\Application as ConsoleApplication;
 
@@ -15,7 +19,6 @@ class Module extends \yii\base\Module
      */
     public $controllerNamespace = 'app\modules\fin\controllers';
 
-
     /**
      * @inheritdoc
      */
@@ -26,6 +29,9 @@ class Module extends \yii\base\Module
         if (Yii::$app instanceof ConsoleApplication) {
             $this->controllerNamespace = 'app\modules\fin\commands';
         }
+
+        Yii::$container->set(WalletRepositoryInterface::class, SqlWalletRepository::class);
+        Yii::$container->set(WalletServiceInterface::class, WalletService::class);
     }
 
     /**
