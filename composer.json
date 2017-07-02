@@ -1,6 +1,6 @@
 {
-  "name": "bte/mail.bte-atm",
-  "description": "Mail wrapper",
+  "name": "ailme/financial-planner",
+  "description": "Yii2 App. Financial planner",
   "type": "project",
   "license": "BSD-3-Clause",
   "require": {
