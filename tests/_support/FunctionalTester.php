@@ -1,4 +1,5 @@
 <?php
+use app\modules\user\models\User;
 
 
 /**
@@ -20,4 +21,22 @@ class FunctionalTester extends \Codeception\Actor
 {
     use _generated\FunctionalTesterActions;
 
+    public function amLoggedInAsAdmin()
+    {
+        $this->amLoggedInByUsername('admin');
+    }
+
+    public function amLoggedInAsUser()
+    {
+        $this->amLoggedInByUsername('user');
+    }
+
+    /**
+     * @param $username
+     */
+    public function amLoggedInByUsername($username)
+    {
+        $I = $this;
+        $I->amLoggedInAs($I->grabRecord(User::className(), ['username' => $username]));
+    }
 }

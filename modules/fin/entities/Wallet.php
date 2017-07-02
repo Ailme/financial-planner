@@ -47,13 +47,18 @@ class Wallet
      *
      * @param WalletId $id
      * @param string $name
+     * @param float $initialBalance
      */
-    public function __construct(WalletId $id, $name)
+    public function __construct(WalletId $id, $name, $initialBalance)
     {
         $this->id = $id;
         $this->name = $name;
-    }
+        $this->initialBalance = $initialBalance;
+        $this->balance = $initialBalance;
 
+        $this->createdDate = new \DateTimeImmutable();
+        $this->status = WalletStatus::ACTIVE();
+    }
 
     /**
      * @return WalletId
@@ -64,27 +69,11 @@ class Wallet
     }
 
     /**
-     * @param WalletId $id
-     */
-    public function setId(WalletId $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
      * @return string
      */
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(string $name)
-    {
-        $this->name = $name;
     }
 
     /**
@@ -168,9 +157,9 @@ class Wallet
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return \DateTimeImmutable|null
      */
-    public function getModifiedDate(): \DateTimeImmutable
+    public function getModifiedDate()
     {
         return $this->modifiedDate;
     }
@@ -181,5 +170,13 @@ class Wallet
     public function setModifiedDate(\DateTimeImmutable $modifiedDate)
     {
         $this->modifiedDate = $modifiedDate;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->status === WalletStatus::ACTIVE();
     }
 }

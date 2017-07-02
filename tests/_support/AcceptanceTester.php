@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 
 
 /**
@@ -20,7 +21,29 @@ class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
-   /**
-    * Define custom actions here
-    */
+    public function amLoggedInAsAdmin()
+    {
+        $this->amLoggedInByCredentials('admin', 'adminpass');
+    }
+
+    public function amLoggedInAsUser()
+    {
+        $this->amLoggedInByCredentials('user', 'userpass');
+    }
+
+    /**
+     * @param $username
+     * @param $password
+     */
+    public function amLoggedInByCredentials($username, $password)
+    {
+        $I = $this;
+        $I->amOnPage(Url::to(['/user/default/login']));
+        $I->seeInTitle('Login');
+        $I->fillField('#loginform-username', $username);
+        $I->fillField('#loginform-password', $password);
+        $I->click('login-button');
+        $I->wait(2);
+        $I->see('Profile', '.nav');
+    }
 }
