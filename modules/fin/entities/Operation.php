@@ -2,15 +2,21 @@
 
 namespace app\modules\fin\entities;
 
+use app\entities\AggregateRoot;
+use app\entities\EventTrait;
+use app\modules\fin\events;
+
 /**
  * Class Operation
  *
  * @package app\modules\fin\entities
  */
-class Operation
+class Operation implements AggregateRoot
 {
+    use EventTrait;
+
     /**
-     * @var OperationTypeId
+     * @var OperationId
      */
     private $id;
     /**
@@ -24,47 +30,40 @@ class Operation
     /**
      * @var float
      */
-    private $amount = 0;
+    private $sum = 0;
     /**
      * @var OperationType
      */
     private $type;
     /**
-     * @var Wallet
+     * @var Wallet[]
      */
-    private $walletFrom;
-    /**
-     * @var Wallet
-     */
-    private $walletTo;
+    private $wallets;
 
     /**
      * Operation constructor.
      *
-     * @param OperationTypeId $id
-     * @param \DateTimeImmutable $createdTime
-     * @param float $amount
+     * @param OperationId $id
+     * @param float $sum
      * @param OperationType $type
-     * @param Wallet $walletFrom
+     * @param Wallet[] $wallets
      */
-    public function __construct(
-        OperationTypeId $id,
-        OperationType $type,
-        Wallet $walletFrom,
-        $amount,
-        \DateTimeImmutable $createdTime
-    ) {
+    public function __construct(OperationId $id, $sum, OperationType $type, array $wallets)
+    {
         $this->id = $id;
-        $this->createdTime = $createdTime;
-        $this->amount = $amount;
+        $this->createdTime = new \DateTimeImmutable();
+        $this->modifiedTime = new \DateTimeImmutable();
+        $this->sum = $sum;
         $this->type = $type;
-        $this->walletFrom = $walletFrom;
+        $this->wallets = $wallets;
+
+        $this->recordEvent(new events\OperationCreated($this->id));
     }
 
     /**
-     * @return OperationTypeId
+     * @return OperationId
      */
-    public function getId(): OperationTypeId
+    public function getId(): OperationId
     {
         return $this->id;
     }
@@ -78,14 +77,6 @@ class Operation
     }
 
     /**
-     * @param \DateTimeImmutable $createdTime
-     */
-    public function setCreatedTime(\DateTimeImmutable $createdTime)
-    {
-        $this->createdTime = $createdTime;
-    }
-
-    /**
      * @return \DateTimeImmutable|null
      */
     public function getModifiedTime()
@@ -94,27 +85,11 @@ class Operation
     }
 
     /**
-     * @param \DateTimeImmutable|null $modifiedTime
-     */
-    public function setModifiedTime($modifiedTime)
-    {
-        $this->modifiedTime = $modifiedTime;
-    }
-
-    /**
      * @return float
      */
-    public function getAmount(): float
+    public function getSum(): float
     {
-        return $this->amount;
-    }
-
-    /**
-     * @param float $amount
-     */
-    public function setAmount(float $amount)
-    {
-        $this->amount = $amount;
+        return $this->sum;
     }
 
     /**
@@ -126,42 +101,11 @@ class Operation
     }
 
     /**
-     * @param OperationType $type
+     * @return Wallet[]
      */
-    public function setType(OperationType $type)
+    public function getWallets(): array
     {
-        $this->type = $type;
+        return $this->wallets;
     }
 
-    /**
-     * @return Wallet
-     */
-    public function getWalletFrom(): Wallet
-    {
-        return $this->walletFrom;
-    }
-
-    /**
-     * @param Wallet $walletFrom
-     */
-    public function setWalletFrom(Wallet $walletFrom)
-    {
-        $this->walletFrom = $walletFrom;
-    }
-
-    /**
-     * @return Wallet
-     */
-    public function getWalletTo(): Wallet
-    {
-        return $this->walletTo;
-    }
-
-    /**
-     * @param Wallet $walletTo
-     */
-    public function setWalletTo(Wallet $walletTo)
-    {
-        $this->walletTo = $walletTo;
-    }
 }

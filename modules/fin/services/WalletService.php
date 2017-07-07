@@ -2,6 +2,8 @@
 
 namespace app\modules\fin\services;
 
+use app\entities\Id;
+use app\modules\fin\entities\Wallet;
 use app\modules\fin\repositories\WalletRepositoryInterface;
 
 /**
@@ -26,9 +28,13 @@ class WalletService implements WalletServiceInterface
         $this->repository = $repository;
     }
 
-    public function get($id)
+    public function get(Id $id)
     {
         // TODO: Implement get() method.
     }
 
+    public function updateBalance(Wallet $wallet, float $value)
+    {
+        // TODO: Implement updateBalance() method.
+    }
 }

@@ -13,5 +13,5 @@ class WalletStatus extends Enum
 {
     const INACTIVE = 'i';
     const ACTIVE = 'a';
-    const DELETED = 'd';
+    const REMOVED = 'r';
 }

@@ -2,13 +2,19 @@
 
 namespace app\modules\fin\entities;
 
+use app\entities\AggregateRoot;
+use app\entities\EventTrait;
+use app\modules\fin\events;
+
 /**
  * Class Wallet
  *
  * @package app\modules\fin\entities
  */
-class Wallet
+class Wallet implements AggregateRoot
 {
+    use EventTrait;
+
     /**
      * @var WalletId
      */
@@ -36,11 +42,11 @@ class Wallet
     /**
      * @var \DateTimeImmutable
      */
-    private $createdDate;
+    private $createdTime;
     /**
      * @var \DateTimeImmutable
      */
-    private $modifiedDate;
+    private $modifiedTime;
 
     /**
      * Wallet constructor.
@@ -48,16 +54,21 @@ class Wallet
      * @param WalletId $id
      * @param string $name
      * @param float $initialBalance
+     * @param string $description
      */
-    public function __construct(WalletId $id, $name, $initialBalance)
+    public function __construct(WalletId $id, $name, $initialBalance, $description = '')
     {
         $this->id = $id;
         $this->name = $name;
         $this->initialBalance = $initialBalance;
         $this->balance = $initialBalance;
 
-        $this->createdDate = new \DateTimeImmutable();
+        $this->createdTime = new \DateTimeImmutable();
+        $this->modifiedTime = new \DateTimeImmutable();
         $this->status = WalletStatus::ACTIVE();
+        $this->description = $description;
+
+        $this->recordEvent(new events\WalletCreated($this->id));
     }
 
     /**
@@ -85,27 +96,11 @@ class Wallet
     }
 
     /**
-     * @param string $description
-     */
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
-    }
-
-    /**
      * @return float
      */
     public function getInitialBalance(): float
     {
         return $this->initialBalance;
-    }
-
-    /**
-     * @param float $initialBalance
-     */
-    public function setInitialBalance(float $initialBalance)
-    {
-        $this->initialBalance = $initialBalance;
     }
 
     /**
@@ -117,14 +112,6 @@ class Wallet
     }
 
     /**
-     * @param float $balance
-     */
-    public function setBalance(float $balance)
-    {
-        $this->balance = $balance;
-    }
-
-    /**
      * @return WalletStatus
      */
     public function getStatus(): WalletStatus
@@ -133,43 +120,19 @@ class Wallet
     }
 
     /**
-     * @param WalletStatus $status
-     */
-    public function setStatus(WalletStatus $status)
-    {
-        $this->status = $status;
-    }
-
-    /**
      * @return \DateTimeImmutable
      */
-    public function getCreatedDate(): \DateTimeImmutable
+    public function getCreatedTime(): \DateTimeImmutable
     {
-        return $this->createdDate;
-    }
-
-    /**
-     * @param \DateTimeImmutable $createdDate
-     */
-    public function setCreatedDate(\DateTimeImmutable $createdDate)
-    {
-        $this->createdDate = $createdDate;
+        return $this->createdTime;
     }
 
     /**
      * @return \DateTimeImmutable|null
      */
-    public function getModifiedDate()
+    public function getModifiedTime()
     {
-        return $this->modifiedDate;
-    }
-
-    /**
-     * @param \DateTimeImmutable $modifiedDate
-     */
-    public function setModifiedDate(\DateTimeImmutable $modifiedDate)
-    {
-        $this->modifiedDate = $modifiedDate;
+        return $this->modifiedTime;
     }
 
     /**
@@ -178,5 +141,132 @@ class Wallet
     public function isActive()
     {
         return $this->status === WalletStatus::ACTIVE();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisable()
+    {
+        return $this->status === WalletStatus::INACTIVE();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRemoved()
+    {
+        return $this->status === WalletStatus::REMOVED();
+    }
+
+    /**
+     * @return $this
+     */
+    public function active()
+    {
+        if ($this->isActive()) {
+            throw new \DomainException('Wallet is already active.');
+        }
+
+        $this->status = WalletStatus::ACTIVE();
+        $this->modifiedTime = new \DateTimeImmutable();
+
+        $this->recordEvent(new events\WalletActived($this->id));
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function disable()
+    {
+        if ($this->isDisable()) {
+            throw new \DomainException('Wallet is already inactive.');
+        }
+
+        $this->status = WalletStatus::INACTIVE();
+        $this->modifiedTime = new \DateTimeImmutable();
+
+        $this->recordEvent(new events\WalletInactived($this->id));
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function remove()
+    {
+        if ($this->isRemoved()) {
+            throw new \DomainException('Wallet is already removed.');
+        }
+
+        $this->status = WalletStatus::REMOVED();
+        $this->modifiedTime = new \DateTimeImmutable();
+
+        $this->recordEvent(new events\WalletRemoved($this->id));
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function updateName(string $name)
+    {
+        $this->name = $name;
+        $this->modifiedTime = new \DateTimeImmutable();
+
+        $this->recordEvent(new events\WalletChangedName($this->id, $this->name));
+
+        return $this;
+    }
+
+    /**
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function updateDescription(string $description)
+    {
+        $this->description = $description;
+        $this->modifiedTime = new \DateTimeImmutable();
+
+        $this->recordEvent(new events\WalletChangedDescription($this->id, $this->description));
+
+        return $this;
+    }
+
+    /**
+     * @param float $balance
+     *
+     * @return $this
+     */
+    public function addBalance(float $balance)
+    {
+        $this->balance += $balance;
+        $this->modifiedTime = new \DateTimeImmutable();
+
+        $this->recordEvent(new events\WalletChangedBalance($this->id, $this->balance));
+
+        return $this;
+    }
+
+    /**
+     * @param float $balance
+     *
+     * @return $this
+     */
+    public function subBalance(float $balance)
+    {
+        $this->balance -= $balance;
+        $this->modifiedTime = new \DateTimeImmutable();
+
+        $this->recordEvent(new events\WalletChangedBalance($this->id, $this->balance));
+
+        return $this;
     }
 }

@@ -2,6 +2,9 @@
 
 namespace app\modules\fin\services;
 
+use app\entities\Id;
+use app\modules\fin\entities\Wallet;
+
 /**
  * Interface WalletServiceInterface
  *
@@ -10,9 +13,17 @@ namespace app\modules\fin\services;
 interface WalletServiceInterface
 {
     /**
-     * @param $id
+     * @param Id $id
      *
-     * @return mixed
+     * @return Wallet|null
      */
-    public function get($id);
+    public function get(Id $id);
+
+    /**
+     * @param Wallet $wallet
+     * @param float $value
+     *
+     * @return Wallet
+     */
+    public function updateBalance(Wallet $wallet, float $value);
 }

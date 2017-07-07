@@ -29,9 +29,6 @@ class Module extends \yii\base\Module
         if (Yii::$app instanceof ConsoleApplication) {
             $this->controllerNamespace = 'app\modules\fin\commands';
         }
-
-        Yii::$container->set(WalletRepositoryInterface::class, SqlWalletRepository::class);
-        Yii::$container->set(WalletServiceInterface::class, WalletService::class);
     }
 
     /**
