@@ -48,7 +48,7 @@ class Operation implements AggregateRoot
      * @param OperationType $type
      * @param Wallet[] $wallets
      */
-    public function __construct(OperationId $id, $sum, OperationType $type, array $wallets)
+    public function __construct(OperationId $id, float $sum, OperationType $type, array $wallets)
     {
         $this->id = $id;
         $this->createdTime = new \DateTimeImmutable();

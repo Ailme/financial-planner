@@ -56,7 +56,7 @@ class Wallet implements AggregateRoot
      * @param float $initialBalance
      * @param string $description
      */
-    public function __construct(WalletId $id, $name, $initialBalance, $description = '')
+    public function __construct(WalletId $id, string $name, float $initialBalance, string $description = '')
     {
         $this->id = $id;
         $this->name = $name;
