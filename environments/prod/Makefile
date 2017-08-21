@@ -15,11 +15,3 @@ update_messages:
 migrate:
 	@echo "Запуск миграций"
 	@php yii migrate --interactive=0 --migrationPath=@app/modules/user/migrations
-
-test:
-	@echo "Запуск тестов"
-	@php vendor/codeception/codeception/codecept run
-
-test_migrate:
-	@echo "Установка миграций для тестов"
-	@php tests/bin/yii migrate --interactive=0
