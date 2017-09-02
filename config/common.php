@@ -8,7 +8,7 @@ $params = ArrayHelper::merge(
 );
 
 return [
-    'name' => 'Demo Application',
+    'name' => 'Financial Planner',
     'language' => 'ru',
     'sourceLanguage' => 'ru',
     'basePath' => dirname(__DIR__),
@@ -25,38 +25,38 @@ return [
     ],
     'modules' => [
         'main' => [
-            'class' => 'app\modules\main\Module',
+            'class' => \app\modules\main\Module::class,
         ],
         'user' => [
-            'class' => 'app\modules\user\Module',
+            'class' => \app\modules\user\Module::class,
         ],
         'admin' => [
-            'class' => 'app\modules\admin\Module',
+            'class' => \app\modules\admin\Module::class,
         ],
         'fin' => [
-            'class' => 'app\modules\fin\Module',
+            'class' => \app\modules\fin\Module::class,
         ],
     ],
     'components' => [
         'formatter' => [
-            'class' => 'yii\i18n\Formatter',
+            'class' => \yii\i18n\Formatter::class,
             'defaultTimeZone' => 'Europe/Moscow',
             'timeZone' => 'Europe/Moscow',
         ],
         'i18n' => [
             'translations' => [
                 'app' => [
-                    'class' => 'yii\i18n\PhpMessageSource',
+                    'class' => \yii\i18n\PhpMessageSource::class,
                     'forceTranslation' => true,
                 ],
             ],
         ],
         'db' => [
-            'class' => 'yii\db\Connection',
+            'class' => \yii\db\Connection::class,
             'charset' => 'utf8',
         ],
         'urlManager' => [
-            'class' => 'yii\web\UrlManager',
+            'class' => \yii\web\UrlManager::class,
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
@@ -71,23 +71,16 @@ return [
             ],
         ],
         'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
+            'class' => \yii\swiftmailer\Mailer::class,
         ],
         'cache' => [
-            'class' => 'yii\caching\DummyCache',
+            'class' => \yii\caching\MemCache::class,
+            'useMemcached' => true,
         ],
         'log' => [
-            'class' => 'yii\log\Dispatcher',
+            'class' => \yii\log\Dispatcher::class,
         ],
     ],
-    'container' => [
-        'definitions' => [
-            \app\modules\fin\services\WalletServiceInterface::class => 'app\modules\fin\services\WalletService',
-            \app\modules\fin\repositories\WalletRepositoryInterface::class => 'app\modules\fin\repositories\SqlWalletRepository',
-        ],
-        'singletons' => [
-            // Dependency Injection Container singletons configuration
-        ],
-    ],
+    'container' => require(__DIR__ . '/containers.php'),
     'params' => $params,
 ];

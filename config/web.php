@@ -6,7 +6,7 @@ $config = [
     'defaultRoute' => 'main/default/index',
     'components' => [
         'user' => [
-            'identityClass' => 'app\modules\user\models\User',
+            'identityClass' => \app\modules\user\models\User::class,
             'enableAutoLogin' => true,
             'loginUrl' => ['user/default/login'],
         ],

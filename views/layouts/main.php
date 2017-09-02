@@ -26,7 +26,7 @@ echo Nav::widget([
     'options' => ['class' => 'navbar-nav navbar-right'],
     'activateParents' => true,
     'items' => array_filter([
-        ['label' => Yii::t('app', 'NAV_HOME'), 'url' => ['/mail/default/index']],
+        ['label' => Yii::t('app', 'NAV_HOME'), 'url' => ['/main/default/index']],
         Yii::$app->user->isGuest ?
             ['label' => Yii::t('app', 'NAV_SIGNUP'), 'url' => ['/user/default/signup']] :
             false,
